@@ -223,6 +223,12 @@ namespace Micronetes.Hosting.Model
                     set($"{envName}_SERVICE_PORT", b.Port.ToString());
                 }
 
+                if (b.Url != null)
+                {
+                    set($"SERVICE__{configName}__URL", b.Url);
+                    set($"{envName}_SERVICE_URL", b.Url);
+                }
+
                 set($"SERVICE__{configName}__HOST", b.Host ?? defaultHost);
                 set($"{envName}_SERVICE_HOST", b.Host ?? defaultHost);
             }

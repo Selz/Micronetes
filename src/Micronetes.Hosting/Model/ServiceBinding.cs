@@ -8,5 +8,6 @@
         public int? InternalPort { get; set; }
         public string Host { get; set; }
         public string Protocol { get; set; }
+        public string Url { get; set; }
     }
 }

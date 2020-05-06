@@ -79,7 +79,8 @@
 
     string GetUrl(ServiceBinding b)
     {
-        return $"{(b.Protocol ?? "http")}://{b.Host ?? "localhost"}:{b.Port}";
+        return !string.IsNullOrEmpty(b.Url) ? b.Url : 
+            $"{(b.Protocol ?? "http")}://{b.Host ?? "localhost"}:{b.Port}";
     }
 
     protected override void OnInitialized()

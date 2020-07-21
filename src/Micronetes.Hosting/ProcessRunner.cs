@@ -90,6 +90,20 @@ namespace Micronetes.Hosting
 
             if (service.Status.ProjectFilePath != null && service.Description.Build.GetValueOrDefault() && _buildProjects)
             {
+                _logger.LogInformation("Restoring project {ProjectFile}", service.Status.ProjectFilePath);
+
+                service.Logs.OnNext($"dotnet restore \"{service.Status.ProjectFilePath}\"");
+
+                var restoreResult = await ProcessUtil.RunAsync("dotnet", $"restore \"{service.Status.ProjectFilePath}\"",
+                    outputDataReceived: data => service.Logs.OnNext(data),
+                    throwOnError: false);
+
+                if (restoreResult.ExitCode != 0)
+                {
+                    _logger.LogInformation("Restoring {ProjectFile} failed with exit code {ExitCode}: " + restoreResult.StandardOutput + restoreResult.StandardError, service.Status.ProjectFilePath, restoreResult.ExitCode);
+                    return;
+                }
+
                 // Sometimes building can fail because of file locking (like files being open in VS)
                 _logger.LogInformation("Cleaning project {ProjectFile}", service.Status.ProjectFilePath);
 
@@ -102,6 +116,7 @@ namespace Micronetes.Hosting
                 if (cleanResult.ExitCode != 0)
                 {
                     _logger.LogInformation("Cleaning {ProjectFile} failed with exit code {ExitCode}: " + cleanResult.StandardOutput + cleanResult.StandardError, service.Status.ProjectFilePath, cleanResult.ExitCode);
+                    return;
                 }
 
                 _logger.LogInformation("Building project {ProjectFile}", service.Status.ProjectFilePath);

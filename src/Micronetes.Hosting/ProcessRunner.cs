@@ -102,7 +102,6 @@ namespace Micronetes.Hosting
                 if (cleanResult.ExitCode != 0)
                 {
                     _logger.LogInformation("Cleaning {ProjectFile} failed with exit code {ExitCode}: " + cleanResult.StandardOutput + cleanResult.StandardError, service.Status.ProjectFilePath, cleanResult.ExitCode);
-                    return;
                 }
 
                 _logger.LogInformation("Building project {ProjectFile}", service.Status.ProjectFilePath);
